@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akmal & Ayumi — Hitungan Cinta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-serif-display { font-family: 'Playfair Display', serif; }
+    .card-soft {
+      background: #ffffff;
+      border: 1px solid #e7e5e4;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 8px 24px -12px rgba(0,0,0,0.08);
+    }
+    .stat-card {
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: #d6d3d1;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px; border-radius: 9999px; background: #16a34a;
+      box-shadow: 0 0 0 0 rgba(22,163,74,.6);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(22,163,74,.5); }
+      70% { box-shadow: 0 0 0 10px rgba(22,163,74,0); }
+      100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+    }
+    .timeline-dot::before {
+      content: ''; position: absolute; left: 0; top: 6px;
+      width: 12px; height: 12px; border-radius: 9999px;
+      background: #1c1917; border: 3px solid #fff;
+      box-shadow: 0 0 0 1px #d6d3d1;
+    }
+    .timeline-line::after {
+      content: ''; position: absolute; left: 5px; top: 20px; bottom: -20px;
+      width: 1px; background: #e7e5e4;
+    }
+    .delete-btn { opacity: 0; transition: opacity .15s ease; }
+    .timeline-item:hover .delete-btn { opacity: 1; }
+
+    .progress-bar {
+      height: 6px;
+      border-radius: 9999px;
+      background: #f5f5f4;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width .6s ease;
+    }
+    .ring-progress {
+      transform: rotate(-90deg);
+    }
+    .ring-progress circle {
+      transition: stroke-dashoffset .6s ease;
+    }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen">
+
+  <!-- HEADER -->
+  <header class="border-b border-stone-200 bg-white sticky top-0 z-10">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-stone-900 flex items-center justify-center text-white">
+          <i class="fa-solid fa-heart text-sm"></i>
+        </div>
+        <div>
+          <p class="font-semibold text-sm leading-tight">Akmal & Ayumi</p>
+          <p class="text-[11px] text-stone-500">Since 7 Okt 2023</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-stone-500">
+        <span class="pulse-dot"></span>
+        <span class="hidden sm:inline">Masih bersama</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-5 py-8">
+
+    <!-- HERO -->
+    <section class="text-center mb-10">
+      <p class="text-xs tracking-[0.2em] uppercase text-stone-500 mb-3">Hitungan Hari Bersama</p>
+      <h1 class="font-serif-display text-4xl md:text-5xl text-stone-900 leading-tight mb-3">
+        Akmal <span class="text-stone-400">&</span> Ayumi
+      </h1>
+      <p class="text-stone-500 text-sm max-w-md mx-auto">
+        Pacar sekaligus sahabat. Kenal dari 7 Oktober 2023, sempat istirahat sebentar, lalu balikan 16 September 2026.
+      </p>
+    </section>
+
+    <!-- ================= HERO COUNTER ================= -->
+    <section class="card-soft rounded-2xl p-6 mb-6">
+      <div class="flex items-center justify-between mb-5">
+        <p class="text-xs tracking-[0.15em] uppercase text-stone-500">Waktu Bersama Sejak Balikan</p>
+        <span class="badge bg-green-50 text-green-700 border border-green-200">
+          <i class="fa-solid fa-circle text-[6px]"></i> Aktif
+        </span>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center gap-6">
+        <!-- Ring progress -->
+        <div class="relative flex-shrink-0">
+          <svg width="140" height="140" class="ring-progress">
+            <circle cx="70" cy="70" r="60" stroke="#f5f5f4" stroke-width="10" fill="none" />
+            <circle id="ringFill" cx="70" cy="70" r="60" stroke="#1c1917" stroke-width="10" fill="none"
+                    stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377" />
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span id="ringPercent" class="text-2xl font-bold text-stone-900 tabular-nums">0%</span>
+            <span class="text-[10px] uppercase tracking-wider text-stone-400 mt-0.5">Menuju 100 hari</span>
+          </div>
+        </div>
+
+        <!-- Detail -->
+        <div class="flex-1 text-center md:text-left">
+          <div class="flex items-baseline justify-center md:justify-start gap-3 flex-wrap">
+            <span id="totalDays" class="text-6xl md:text-7xl font-bold text-stone-900 tabular-nums leading-none">0</span>
+            <span class="text-lg text-stone-500 font-medium">hari</span>
+          </div>
+          <p id="sinceText" class="text-xs text-stone-500 mt-2">Sejak 16 September 2026</p>
+          <p class="text-[11px] text-stone-400 mt-1">
+            <i class="fa-solid fa-circle-info mr-1"></i>
+            Setara <span id="friendlyDuration" class="font-semibold text-stone-600">-</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Progress bar visual -->
+      <div class="mt-5">
+        <div class="flex items-center justify-between text-[11px] text-stone-500 mb-2">
+          <span>Progress ke 100 hari pertama</span>
+          <span id="progressLabel" class="font-semibold text-stone-700">0 / 100 hari</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill bg-stone-900" style="width: 0%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= GRID DETAIL DURASI ================= -->
+    <section class="card-soft rounded-2xl p-6 mb-6">
+      <p class="text-xs tracking-[0.15em] uppercase text-stone-500 mb-5">Rincian Durasi</p>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="stat-card rounded-xl p-4 text-center">
+          <i class="fa-solid fa-calendar text-stone-400 text-xs mb-2"></i>
+          <p id="months" class="text-2xl font-bold text-stone-900 tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-500 mt-1">Bulan</p>
+        </div>
+        <div class="stat-card rounded-xl p-4 text-center">
+          <i class="fa-solid fa-calendar-week text-stone-400 text-xs mb-2"></i>
+          <p id="weeks" class="text-2xl font-bold text-stone-900 tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-500 mt-1">Minggu</p>
+        </div>
+        <div class="stat-card rounded-xl p-4 text-center">
+          <i class="fa-solid fa-clock text-stone-400 text-xs mb-2"></i>
+          <p id="hours" class="text-2xl font-bold text-stone-900 tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-500 mt-1">Jam</p>
+        </div>
+        <div class="stat-card rounded-xl p-4 text-center">
+          <i class="fa-solid fa-stopwatch text-stone-400 text-xs mb-2"></i>
+          <p id="minutes" class="text-2xl font-bold text-stone-900 tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-500 mt-1">Menit</p>
+        </div>
+      </div>
+
+      <!-- Detik full width -->
+      <div class="stat-card rounded-xl p-5 text-center mt-3">
+        <i class="fa-solid fa-heart-pulse text-stone-400 text-xs mb-2"></i>
+        <p id="seconds" class="text-3xl md:text-4xl font-bold text-stone-900 tabular-nums">0</p>
+        <p class="text-[10px] uppercase tracking-wider text-stone-500 mt-1">Detik</p>
+      </div>
+    </section>
+
+    <!-- ================= LIVE COUNTER ================= -->
+    <section class="card-soft rounded-2xl p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-xs tracking-[0.15em] uppercase text-stone-500">Hitungan Berjalan</p>
+        <span class="pulse-dot"></span>
+      </div>
+      <div class="grid grid-cols-4 gap-2 md:gap-3">
+        <div class="bg-stone-900 rounded-xl p-3 md:p-4 text-center text-white">
+          <p id="liveDays" class="text-xl md:text-3xl font-bold tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-400 mt-1">Hari</p>
+        </div>
+        <div class="bg-stone-900 rounded-xl p-3 md:p-4 text-center text-white">
+          <p id="liveHours" class="text-xl md:text-3xl font-bold tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-400 mt-1">Jam</p>
+        </div>
+        <div class="bg-stone-900 rounded-xl p-3 md:p-4 text-center text-white">
+          <p id="liveMinutes" class="text-xl md:text-3xl font-bold tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-400 mt-1">Menit</p>
+        </div>
+        <div class="bg-stone-900 rounded-xl p-3 md:p-4 text-center text-white">
+          <p id="liveSeconds" class="text-xl md:text-3xl font-bold tabular-nums">0</p>
+          <p class="text-[10px] uppercase tracking-wider text-stone-400 mt-1">Detik</p>
+        </div>
+      </div>
+      <p class="text-center text-[11px] text-stone-500 mt-3">
+        <i class="fa-solid fa-bolt text-amber-500 mr-1"></i>
+        Update otomatis setiap detik
+      </p>
+    </section>
+
+    <!-- ================= MILESTONE / COUNTDOWN ================= -->
+    <section class="card-soft rounded-2xl p-6 mb-6">
+      <p class="text-xs tracking-[0.15em] uppercase text-stone-500 mb-5">Milestone Berikutnya</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="bg-stone-50 border border-stone-200 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-cake-candles text-pink-500 text-sm"></i>
+            <p class="text-xs font-semibold text-stone-700">Anniversary Berikutnya</p>
+          </div>
+          <p id="annivLabel" class="text-lg font-bold text-stone-900 tabular-nums">-</p>
+          <p id="annivDate" class="text-[11px] text-stone-500 mt-0.5">-</p>
+        </div>
+
+        <div class="bg-stone-50 border border-stone-200 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-flag-checkered text-blue-500 text-sm"></i>
+            <p class="text-xs font-semibold text-stone-700">Menuju 100 Hari</p>
+          </div>
+          <p id="hundredLabel" class="text-lg font-bold text-stone-900 tabular-nums">-</p>
+          <p id="hundredDate" class="text-[11px] text-stone-500 mt-0.5">-</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PERJALANAN KAMI ================= -->
+    <section class="card-soft rounded-2xl p-6 mb-6">
+      <p class="text-xs tracking-[0.15em] uppercase text-stone-500 mb-5">Perjalanan Kami</p>
+
+      <!-- FASE 1: AWAL -->
+      <div class="flex items-start gap-4 pb-5 border-b border-stone-100">
+        <div class="w-10 h-10 rounded-lg bg-green-50 border border-green-200 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-seedling text-green-600 text-sm"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between gap-2 mb-1 flex-wrap">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-sm text-stone-900">Awal Jadian</p>
+              <span class="badge bg-green-50 text-green-700 border border-green-200">
+                Fase 1
+              </span>
+            </div>
+            <span class="text-[11px] text-stone-400">7 Okt 2023 — 9 Des 2023</span>
+          </div>
+          <p class="text-xs text-stone-500 leading-relaxed mb-3">
+            Pertama kali memutuskan untuk bersama. Dua bulan penuh cerita, tawa, dan belajar satu sama lain.
+          </p>
+          <div class="flex items-center gap-3 text-[11px]">
+            <span class="text-stone-600"><i class="fa-solid fa-hourglass-half mr-1 text-stone-400"></i><span id="fase1Durasi" class="font-semibold tabular-nums">-</span></span>
+            <span class="text-stone-400">·</span>
+            <span class="text-stone-500">Selesai</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 2: ISTIRAHAT -->
+      <div class="flex items-start gap-4 py-5 border-b border-stone-100">
+        <div class="w-10 h-10 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-mug-hot text-amber-600 text-sm"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between gap-2 mb-1 flex-wrap">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-sm text-stone-900">Istirahat</p>
+              <span class="badge bg-amber-50 text-amber-700 border border-amber-200">
+                Fase 2
+              </span>
+            </div>
+            <span class="text-[11px] text-stone-400">9 Des 2023 — 16 Sep 2026</span>
+          </div>
+          <p class="text-xs text-stone-500 leading-relaxed mb-3">
+            Bukan putus. Cuma jeda. Kami sama-sama masih saling suka, cuma butuh waktu buat diri sendiri
+            dan tumbuh dulu. Hati tetap sama, cuma jalannya yang dipisah sebentar.
+          </p>
+          <div class="flex items-center gap-3 text-[11px]">
+            <span class="text-stone-600"><i class="fa-solid fa-hourglass-half mr-1 text-stone-400"></i><span id="fase2Durasi" class="font-semibold tabular-nums">-</span></span>
+            <span class="text-stone-400">·</span>
+            <span class="text-stone-500">Selesai</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FASE 3: BALIKAN -->
+      <div class="flex items-start gap-4 pt-5">
+        <div class="w-10 h-10 rounded-lg bg-stone-900 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-heart text-white text-sm"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between gap-2 mb-1 flex-wrap">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-sm text-stone-900">Balikan & Lanjut</p>
+              <span class="badge bg-stone-900 text-white border border-stone-900">
+                Fase 3 · Aktif
+              </span>
+            </div>
+            <span class="text-[11px] text-stone-400">16 Sep 2026 — sekarang</span>
+          </div>
+          <p class="text-xs text-stone-500 leading-relaxed mb-3">
+            Balikan dengan versi diri yang lebih matang. Sekarang hitungannya jalan lagi, dan kita jaga
+            sama-sama.
+          </p>
+          <div class="flex items-center gap-3 text-[11px]">
+            <span class="text-stone-600"><i class="fa-solid fa-hourglass-half mr-1 text-stone-400"></i><span id="fase3Durasi" class="font-semibold tabular-nums">-</span></span>
+            <span class="text-stone-400">·</span>
+            <span class="text-green-600 font-semibold flex items-center gap-1">
+              <span class="pulse-dot"></span> Sedang berjalan
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total line -->
+      <div class="mt-5 pt-5 border-t border-stone-100">
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="text-stone-500">Total perjalanan dari awal jadian</span>
+          <span class="font-semibold text-stone-700 tabular-nums" id="totalSejakAwal">-</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= AKSI ================= -->
+    <section class="card-soft rounded-2xl p-6 mb-6">
+      <p class="text-xs tracking-[0.15em] uppercase text-stone-500 mb-4">Catat Momen Penting</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <button onclick="catatIstirahat()" class="flex items-center justify-center gap-2 bg-white border border-stone-300 hover:border-amber-300 hover:bg-amber-50 text-stone-700 hover:text-amber-700 rounded-xl px-4 py-3 text-sm font-medium transition">
+          <i class="fa-solid fa-mug-hot"></i>
+          Catat Istirahat
+        </button>
+        <button onclick="catatBalikan()" class="flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl px-4 py-3 text-sm font-medium transition">
+          <i class="fa-solid fa-heart"></i>
+          Balikan Lagi
+        </button>
+      </div>
+      <p class="text-[11px] text-stone-400 mt-3 text-center">
+        Momen tersimpan permanen di browser kamu. Hitungan tetap jalan, tidak reset.
+      </p>
+    </section>
+
+    <!-- ================= TIMELINE ================= -->
+    <section class="card-soft rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-5">
+        <p class="text-xs tracking-[0.15em] uppercase text-stone-500">Timeline Hubungan</p>
+        <button onclick="resetTimeline()" class="text-[11px] text-stone-400 hover:text-red-500 transition">
+          <i class="fa-solid fa-rotate-left mr-1"></i>Reset
+        </button>
+      </div>
+      <div id="timeline" class="space-y-5">
+        <!-- diisi JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-3xl mx-auto px-5 py-10 text-center">
+    <p class="text-xs text-stone-400">
+      Dibuat dengan <i class="fa-solid fa-heart text-red-400 mx-1"></i> untuk Ayumi Amesaki
+    </p>
+    <p class="text-[10px] text-stone-300 mt-1">Akmal Raditya Wijaya · 2026</p>
+  </footer>
+
+  <script>
+    // ====== KONFIGURASI ======
+    const TANGGAL_AWAL_JADIAN = new Date('2023-10-07T00:00:00');
+    const TANGGAL_ISTIRAHAT   = new Date('2023-12-09T00:00:00');
+    const TANGGAL_BALIKAN     = new Date('2026-09-16T00:00:00');
+    const STORAGE_KEY = 'akmal_ayumi_timeline_v2';
+
+    // ====== TIMELINE DEFAULT ======
+    const TIMELINE_DEFAULT = [
+      {
+        id: 'default-balikan',
+        tanggal: '2026-09-16',
+        judul: 'Balikan Lagi',
+        deskripsi: 'Hari di mana Akmal dan Ayumi memutuskan untuk balikan dengan versi diri yang lebih matang.',
+        tipe: 'balikan',
+        icon: 'fa-heart',
+        warna: 'text-green-600 bg-green-50 border-green-200'
+      },
+      {
+        id: 'default-istirahat',
+        tanggal: '2023-12-09',
+        judul: 'Istirahat (Bukan Putus)',
+        deskripsi: 'Bukan putus, cuma jeda. Kami sama-sama masih saling suka, cuma butuh waktu buat tumbuh dulu.',
+        tipe: 'istirahat',
+        icon: 'fa-mug-hot',
+        warna: 'text-amber-600 bg-amber-50 border-amber-200'
+      },
+      {
+        id: 'default-awal',
+        tanggal: '2023-10-07',
+        judul: 'Awal Jadian',
+        deskripsi: 'Pertama kali Akmal dan Ayumi memutuskan untuk bersama.',
+        tipe: 'awal',
+        icon: 'fa-seedling',
+        warna: 'text-green-600 bg-green-50 border-green-200'
+      }
+    ];
+
+    // ====== LOAD & SAVE ======
+    function loadTimeline() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [...TIMELINE_DEFAULT];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length === 0) return [...TIMELINE_DEFAULT];
+        return parsed;
+      } catch (e) {
+        console.warn('Gagal load timeline:', e);
+        return [...TIMELINE_DEFAULT];
+      }
+    }
+    function saveTimeline() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(timelineData)); }
+      catch (e) { console.warn('Gagal simpan timeline:', e); }
+    }
+    let timelineData = loadTimeline();
+
+    // ====== UTIL ======
+    function hitungDurasi(dari) {
+      const now = new Date();
+      const ms = now - dari;
+      const totalDetik = Math.floor(ms / 1000);
+      const totalMenit = Math.floor(totalDetik / 60);
+      const totalJam = Math.floor(totalMenit / 60);
+      const totalHari = Math.floor(totalJam / 24);
+      const totalMinggu = Math.floor(totalHari / 7);
+
+      let bulan = (now.getFullYear() - dari.getFullYear()) * 12 + (now.getMonth() - dari.getMonth());
+      if (now.getDate() < dari.getDate()) bulan--;
+      if (bulan < 0) bulan = 0;
+
+      return { totalDetik, totalMenit, totalJam, totalHari, totalMinggu, bulan };
+    }
+
+    function formatFriendly(dari, ke) {
+      // hitung selisih dalam format "X tahun Y bulan Z hari"
+      const totalHari = Math.floor((ke - dari) / 86400000);
+      const tahun = Math.floor(totalHari / 365);
+      const sisaSetelahTahun = totalHari % 365;
+      const bulan = Math.floor(sisaSetelahTahun / 30);
+      const hari = sisaSetelahTahun % 30;
+
+      const parts = [];
+      if (tahun > 0) parts.push(tahun + ' tahun');
+      if (bulan > 0) parts.push(bulan + ' bulan');
+      if (hari > 0 || parts.length === 0) parts.push(hari + ' hari');
+      return parts.join(' ');
+    }
+
+    function formatRingkas(dari, ke) {
+      const totalHari = Math.floor((ke - dari) / 86400000);
+      const tahun = Math.floor(totalHari / 365);
+      const sisaSetelahTahun = totalHari % 365;
+      const bulan = Math.floor(sisaSetelahTahun / 30);
+      const hari = sisaSetelahTahun % 30;
+
+      const parts = [];
+      if (tahun > 0) parts.push(tahun + 'th');
+      if (bulan > 0) parts.push(bulan + 'bl');
+      if (hari > 0 || parts.length === 0) parts.push(hari + 'hr');
+      return parts.join(' ');
+    }
+
+    // ====== RENDER COUNTER UTAMA ======
+    function renderStat() {
+      const now = new Date();
+      const d = hitungDurasi(TANGGAL_BALIKAN);
+      const dAwal = hitungDurasi(TANGGAL_AWAL_JADIAN);
+
+      document.getElementById('totalDays').textContent = d.totalHari.toLocaleString('id-ID');
+      document.getElementById('months').textContent = d.bulan;
+      document.getElementById('weeks').textContent = d.totalMinggu.toLocaleString('id-ID');
+      document.getElementById('hours').textContent = d.totalJam.toLocaleString('id-ID');
+      document.getElementById('minutes').textContent = d.totalMenit.toLocaleString('id-ID');
+      document.getElementById('seconds').textContent = d.totalDetik.toLocaleString('id-ID');
+
+      const opsi = { day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('sinceText').textContent =
+        'Sejak ' + TANGGAL_BALIKAN.toLocaleDateString('id-ID', opsi);
+
+      // friendly duration
+      document.getElementById('friendlyDuration').textContent =
+        formatFriendly(TANGGAL_BALIKAN, now);
+
+      // ring progress menuju 100 hari
+      const target = 100;
+      const persen = Math.min(100, (d.totalHari / target) * 100);
+      const circumference = 377;
+      const offset = circumference - (persen / 100) * circumference;
+      document.getElementById('ringFill').setAttribute('stroke-dashoffset', offset);
+      document.getElementById('ringPercent').textContent = Math.floor(persen) + '%';
+      document.getElementById('progressFill').style.width = persen + '%';
+      document.getElementById('progressLabel').textContent =
+        Math.min(d.totalHari, target) + ' / ' + target + ' hari';
+
+      // total sejak awal
+      document.getElementById('totalSejakAwal').textContent =
+        dAwal.totalHari.toLocaleString('id-ID') + ' hari';
+
+      // fase durasi
+      const fase1 = Math.floor((TANGGAL_ISTIRAHAT - TANGGAL_AWAL_JADIAN) / 86400000);
+      const fase2 = Math.floor((TANGGAL_BALIKAN - TANGGAL_ISTIRAHAT) / 86400000);
+      const fase3 = d.totalHari;
+
+      document.getElementById('fase1Durasi').textContent = fase1 + ' hari (' + formatRingkas(TANGGAL_AWAL_JADIAN, TANGGAL_ISTIRAHAT) + ')';
+      document.getElementById('fase2Durasi').textContent = fase2 + ' hari (' + formatRingkas(TANGGAL_ISTIRAHAT, TANGGAL_BALIKAN) + ')';
+      document.getElementById('fase3Durasi').textContent = fase3 + ' hari (' + formatRingkas(TANGGAL_BALIKAN, now) + ')';
+
+      // milestone: anniversary berikutnya (16 Sep tiap tahun)
+      const anniv = new Date(now.getFullYear(), 8, 16); // bulan 8 = September
+      if (anniv < now) anniv.setFullYear(anniv.getFullYear() + 1);
+      const selisihAnniv = Math.ceil((anniv - now) / 86400000);
+      document.getElementById('annivLabel').textContent = selisihAnniv + ' hari lagi';
+      document.getElementById('annivDate').textContent =
+        anniv.toLocaleDateString('id-ID', opsi) + ' · Anniversary ke-' + (anniv.getFullYear() - 2026);
+
+      // milestone: 100 hari
+      const target100 = new Date(TANGGAL_BALIKAN);
+      target100.setDate(target100.getDate() + 100);
+      const selisih100 = Math.ceil((target100 - now) / 86400000);
+      if (selisih100 > 0) {
+        document.getElementById('hundredLabel').textContent = selisih100 + ' hari lagi';
+        document.getElementById('hundredDate').textContent =
+          target100.toLocaleDateString('id-ID', opsi);
+      } else {
+        document.getElementById('hundredLabel').textContent = 'Sudah tercapai 🎉';
+        document.getElementById('hundredDate').textContent =
+          'Tercapai pada ' + target100.toLocaleDateString('id-ID', opsi);
+      }
+    }
+
+    // ====== LIVE COUNTER ======
+    function renderLive() {
+      const now = new Date();
+      const selisihMs = now - TANGGAL_BALIKAN;
+      const totalDetik = Math.floor(selisihMs / 1000);
+      const hari = Math.floor(totalDetik / 86400);
+      const sisa = totalDetik % 86400;
+      const jam = Math.floor(sisa / 3600);
+      const menit = Math.floor((sisa % 3600) / 60);
+      const detik = sisa % 60;
+
+      document.getElementById('liveDays').textContent = hari.toLocaleString('id-ID');
+      document.getElementById('liveHours').textContent = String(jam).padStart(2, '0');
+      document.getElementById('liveMinutes').textContent = String(menit).padStart(2, '0');
+      document.getElementById('liveSeconds').textContent = String(detik).padStart(2, '0');
+    }
+
+    // ====== TIMELINE ======
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    function generateId() {
+      return 'm-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timeline');
+      container.innerHTML = '';
+      const sorted = [...timelineData].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+      if (sorted.length === 0) {
+        container.innerHTML = '<p class="text-xs text-stone-400 text-center py-6">Belum ada momen tercatat.</p>';
+        return;
+      }
+
+      sorted.forEach((item, i) => {
+        const opsi = { day: 'numeric', month: 'long', year: 'numeric' };
+        const tgl = new Date(item.tanggal).toLocaleDateString('id-ID', opsi);
+
+        const el = document.createElement('div');
+        el.className = 'relative pl-7 timeline-item group';
+        el.innerHTML = `
+          <div class="timeline-dot ${i !== sorted.length - 1 ? 'timeline-line' : ''}"></div>
+          <div class="flex items-start justify-between gap-3 mb-1">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg border ${item.warna}">
+                <i class="fa-solid ${item.icon} text-xs"></i>
+              </span>
+              <p class="font-semibold text-sm text-stone-900">${escapeHtml(item.judul)}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-stone-400 whitespace-nowrap">${tgl}</span>
+              <button onclick="hapusMomen('${item.id}')" class="delete-btn text-stone-300 hover:text-red-500 transition" title="Hapus">
+                <i class="fa-solid fa-xmark text-xs"></i>
+              </button>
+            </div>
+          </div>
+          <p class="text-xs text-stone-500 leading-relaxed">${escapeHtml(item.deskripsi)}</p>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    // ====== AKSI ======
+    function tambahTimeline(judul, deskripsi, tipe, icon, warna) {
+      const today = new Date().toISOString().split('T')[0];
+      if (timelineData.some(t => t.tanggal === today && t.tipe === tipe)) {
+        alert('Momen "' + judul + '" sudah dicatat hari ini.');
+        return;
+      }
+      timelineData.push({ id: generateId(), tanggal: today, judul, deskripsi, tipe, icon, warna });
+      saveTimeline();
+      renderTimeline();
+      alert('Momen "' + judul + '" berhasil dicatat & tersimpan permanen.');
+    }
+
+    function hapusMomen(id) {
+      if (!confirm('Hapus momen ini dari timeline?')) return;
+      timelineData = timelineData.filter(t => t.id !== id);
+      saveTimeline();
+      renderTimeline();
+    }
+    function catatIstirahat() {
+      if (!confirm('Catat momen istirahat? Ini cuma catatan, hitungan tetap jalan.')) return;
+      tambahTimeline('Istirahat', 'Bukan putus, cuma jeda. Kami sama-sama masih saling suka, cuma butuh waktu buat tumbuh dulu.',
+        'istirahat', 'fa-mug-hot', 'text-amber-600 bg-amber-50 border-amber-200');
+    }
+    function catatBalikan() {
+      if (!confirm('Catat momen balikan lagi hari ini?')) return;
+      tambahTimeline('Balikan Lagi', 'Akmal dan Ayumi memutuskan untuk balikan dengan versi diri yang lebih matang.',
+        'balikan', 'fa-heart', 'text-green-600 bg-green-50 border-green-200');
+    }
+    function resetTimeline() {
+      if (!confirm('Reset timeline ke default? Semua momen tambahan akan hilang.')) return;
+      timelineData = [...TIMELINE_DEFAULT];
+      saveTimeline();
+      renderTimeline();
+    }
+
+    // ====== INIT ======
+    renderStat();
+    renderLive();
+    renderTimeline();
+    setInterval(() => { renderStat(); renderLive(); }, 1000);
+  </script>
+</body>
+</html>
